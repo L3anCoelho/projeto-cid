@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dicionário de Dados Conceitual — CK Autoshop</title>
+<style>
+  :root {
+    --bg:#ffffff; --fg:#1a1c22; --muted:#5b6170; --line:#e3e6ec; --card:#f7f8fa;
+    --accent:#1f4fd8; --accent-bg:#eef2ff; --code-bg:#f1f2f6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin:0; background:var(--bg); color:var(--fg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 40px 20px 90px; }
+  header { border-bottom:1px solid var(--line); padding-bottom:22px; margin-bottom:30px; }
+  header h1 { font-size:1.6rem; margin:0 0 6px; letter-spacing:-0.01em; }
+  header p { margin:0; color:var(--muted); font-size:0.95rem; }
+  nav.toc {
+    background:var(--card); border:1px solid var(--line); border-radius:10px;
+    padding:18px 22px; margin-bottom:38px;
+  }
+  nav.toc h2 { font-size:0.95rem; text-transform:uppercase; letter-spacing:.04em;
+    color:var(--muted); margin:0 0 10px; font-weight:600; }
+  nav.toc ol {
+    margin:0; padding-left:1.2em; columns: 2; column-gap: 32px;
+  }
+  nav.toc li { margin-bottom:5px; break-inside: avoid; }
+  nav.toc a { color:var(--accent); text-decoration:none; font-size:0.92rem; }
+  nav.toc a:hover { text-decoration:underline; }
+  section.entity {
+    margin-bottom:38px; padding-bottom:6px; border-bottom:1px solid var(--line);
+    scroll-margin-top: 20px;
+  }
+  section.entity:last-of-type { border-bottom:none; }
+  section.entity h2 {
+    font-size:1.15rem; margin:0 0 12px; padding:4px 0;
+    color:var(--fg);
+  }
+  table {
+    width:100%; border-collapse:collapse; font-size:0.9rem;
+  }
+  thead th {
+    text-align:left; background:var(--accent-bg); color:var(--accent);
+    font-size:0.78rem; text-transform:uppercase; letter-spacing:.03em;
+    padding:8px 10px; border-bottom:2px solid var(--accent);
+  }
+  tbody td {
+    padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top;
+  }
+  tbody tr:nth-child(even) { background: var(--card); }
+  code {
+    background:var(--code-bg); padding:1px 6px; border-radius:4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size:0.85em; color:#333;
+  }
+  p.note {
+    margin:10px 0 0; font-size:0.85rem; color:var(--muted); font-style:italic;
+  }
+  a.back-top {
+    position:fixed; right:22px; bottom:22px; background:var(--accent); color:#fff;
+    text-decoration:none; padding:9px 14px; border-radius:20px; font-size:0.82rem;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+  }
+  footer {
+    margin-top:50px; padding-top:18px; border-top:1px solid var(--line);
+    color:var(--muted); font-size:0.85rem;
+  }
+  footer a { color:var(--accent); }
+  @media (max-width:640px) {
+    nav.toc ol { columns: 1; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Dicionário de Dados Conceitual — CK Autoshop</h1>
+    <p>Modelagem de Banco de Dados · Entrega 1 · Modelo conceitual</p>
+  </header>
+
+  <p>
+    Este documento apresenta, entidade por entidade, os atributos utilizados no modelo conceitual
+    da CK Autoshop: nome, descrição e a regra de negócio associada a cada um. O conteúdo corresponde
+    à seção 7 do <a href="README.md">README</a> do repositório e segue a mesma modelagem representada
+    no <a href="docs/der.png">Diagrama Entidade-Relacionamento</a>.
+  </p>
+
+  <nav class="toc" id="indice">
+    <h2>Índice</h2>
+    <ol>
+      <li><a href="#cliente">Cliente</a></li>
+      <li><a href="#veiculo">Veículo</a></li>
+      <li><a href="#peca-mercadoria">Peça/Mercadoria</a></li>
+      <li><a href="#fornecedor">Fornecedor</a></li>
+      <li><a href="#cotacao">Cotação</a></li>
+      <li><a href="#item-da-cotacao">Item da Cotação</a></li>
+      <li><a href="#pedido">Pedido</a></li>
+      <li><a href="#item-do-pedido">Item do Pedido</a></li>
+      <li><a href="#ordem-de-compra">Ordem de Compra</a></li>
+      <li><a href="#movimento-de-estoque">Movimento de Estoque</a></li>
+      <li><a href="#nota-fiscal">Nota Fiscal</a></li>
+      <li><a href="#frete">Frete</a></li>
+      <li><a href="#devolucao-garantia">Devolução/Garantia</a></li>
+      <li><a href="#titulo-financeiro">Título Financeiro</a></li>
+      <li><a href="#parcela-financeira">Parcela Financeira</a></li>
+      <li><a href="#usuario">Usuário</a></li>
+      <li><a href="#item-da-ordem-de-compra">Item da Ordem de Compra</a></li>
+    </ol>
+  </nav>
+
+
+    <section class="entity" id="cliente">
+      <h2>Cliente</h2>
+      <table>
+        <thead>
+          <tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Identificador único do cliente</td><td>Deve identificar exclusivamente cada cliente</td></tr>
+          <tr><td><code>nome</code></td><td>Nome ou razão social</td><td>Obrigatório</td></tr>
+          <tr><td><code>documento</code></td><td>CPF/CNPJ ou documento cadastral</td><td>Deve identificar o cliente</td></tr>
+          <tr><td><code>contato</code></td><td>Telefone ou outro meio de contato</td><td>Usado para comunicação</td></tr>
+          <tr><td><code>endereço</code></td><td>Endereço do cliente</td><td>Deve representar o local cadastrado</td></tr>
+          <tr><td><code>status</code></td><td>Situação do cadastro</td><td>Deve indicar se está ativo ou inativo</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="entity" id="veiculo">
+      <h2>Veículo</h2>
+      <table>
+        <thead>
+          <tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Identificador único do veículo</td><td>Deve identificar exclusivamente cada veículo</td></tr>
+          <tr><td><code>placa</code></td><td>Placa do veículo</td><td>Deve identificar o veículo</td></tr>
+          <tr><td><code>marca</code></td><td>Marca do veículo</td><td>Deve corresponder ao fabricante</td></tr>
+          <tr><td><code>modelo</code></td><td>Modelo do veículo</td><td>Deve identificar o modelo</td></tr>
+          <tr><td><code>ano_fabricacao</code></td><td>Ano de fabricação</td><td>Deve representar o ano de fabricação</td></tr>
+          <tr><td><code>ano_modelo</code></td><td>Ano do modelo</td><td>Deve representar o ano do modelo</td></tr>
+          <tr><td><code>chassi</code></td><td>Número de identificação do veículo</td><td>Quando informado, deve identificar o veículo</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="entity" id="peca-mercadoria">
+      <h2>Peça/Mercadoria</h2>
+      <table>
+        <thead>
+          <tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Identificador único da peça</td><td>Deve ser único</td></tr>
+          <tr><td><code>codigo</code></td><td>Código de identificação da peça</td><td>Deve permitir identificar a peça</td></tr>
+          <tr><td><code>sku</code></td><td>Código interno do produto</td><td>Deve ser único quando utilizado</td></tr>
+          <tr><td><code>descricao</code></td><td>Descrição da peça</td><td>Obrigatória para identificação</td></tr>
+          <tr><td><code>aplicacao</code></td><td>Aplicação da peça</td><td>Deve permitir identificar veículos/aplicações compatíveis</td></tr>
+          <tr><td><code>marca</code></td><td>Marca ou fabricante</td><td>Deve identificar o fabricante</td></tr>
+          <tr><td><code>ncm</code></td><td>Classificação fiscal da mercadoria</td><td>Quando aplicável, deve seguir a classificação fiscal</td></tr>
+          <tr><td><code>unidade_medida</code></td><td>Unidade usada para controle</td><td>Deve representar a unidade comercializada</td></tr>
+          <tr><td><code>localizacao_estoque</code></td><td>Local onde a peça está armazenada</td><td>Deve indicar sua localização</td></tr>
+          <tr><td><code>quantidade_estoque</code></td><td>Quantidade disponível</td><td>Deve ser atualizada pelas movimentações</td></tr>
+          <tr><td><code>valor_custo</code></td><td>Custo de aquisição</td><td>Deve representar o custo da peça</td></tr>
+          <tr><td><code>valor_venda</code></td><td>Valor utilizado na venda</td><td>Deve ser compatível com a política comercial</td></tr>
+          <tr><td><code>categoria</code></td><td>Categoria da peça</td><td>Deve classificar a mercadoria</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="entity" id="fornecedor">
+      <h2>Fornecedor</h2>
+      <table>
+        <thead>
+          <tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Identificador único do fornecedor</td><td>Deve ser único</td></tr>
+          <tr><td><code>nome</code></td><td>Nome ou razão social</td><td>Obrigatório</td></tr>
+          <tr><td><code>documento</code></td><td>CPF/CNPJ ou identificação cadastral</td><td>Deve identificar o fornecedor</td></tr>
+          <tr><td><code>contato</code></td><td>Telefone ou meio de contato</td><td>Usado para comunicação</td></tr>
+          <tr><td><code>endereço</code></td><td>Endereço do fornecedor</td><td>Deve representar o endereço cadastrado</td></tr>
+          <tr><td><code>status</code></td><td>Situação do fornecedor</td><td>Deve indicar se está ativo ou inativo</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="entity" id="cotacao">
+      <h2>Cotação</h2>
+      <table>
+        <thead>
+          <tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Identificador da cotação</td><td>Deve ser único</td></tr>
+          <tr><td><code>cliente_id</code></td><td>Cliente relacionado</td><td>Toda cotação deve possuir um cliente</td></tr>
+          <tr><td><code>veiculo_id</code></td><td>Veículo relacionado</td><td>Pode ser informado conforme a operação</td></tr>
+          <tr><td><code>responsavel_id</code></td><td>Usuário responsável pela cotação (FK → Usuário)</td><td>Deve identificar o responsável</td></tr>
+          <tr><td><code>status</code></td><td>Situação da cotação</td><td>Deve representar o andamento</td></tr>
+          <tr><td><code>data_entrada</code></td><td>Data de criação/entrada</td><td>Deve registrar o início da cotação</td></tr>
+          <tr><td><code>desconto</code></td><td>Desconto concedido</td><td>Deve ser considerado no cálculo da venda</td></tr>
+          <tr><td><code>frete</code></td><td>Valor do frete</td><td>Quando aplicável</td></tr>
+          <tr><td><code>impostos</code></td><td>Valor dos impostos</td><td>Quando aplicável</td></tr>
+          <tr><td><code>comissao</code></td><td>Valor ou percentual de comissão</td><td>Quando aplicável</td></tr>
+          <tr><td><code>antecipacao</code></td><td>Valor de antecipação</td><td>Quando aplicável</td></tr>
+          <tr><td><code>observacao</code></td><td>Informações adicionais</td><td>Usada para registrar observações</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="entity" id="item-da-cotacao">
+      <h2>Item da Cotação</h2>
+      <table>
+        <thead>
+          <tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Identificador do item</td><td>Deve ser único</td></tr>
+          <tr><td><code>cotacao_id</code></td><td>Cotação à qual o item pertence</td><td>Todo item deve estar associado a uma cotação</td></tr>
+          <tr><td><code>peca_id</code></td><td>Peça solicitada</td><td>Deve identificar a peça</td></tr>
+          <tr><td><code>quantidade</code></td><td>Quantidade solicitada</td><td>Deve ser maior que zero</td></tr>
+          <tr><td><code>valor_custo</code></td><td>Custo da peça</td><td>Usado para cálculo da margem</td></tr>
+          <tr><td><code>valor_venda</code></td><td>Valor de venda da peça</td><td>Deve representar o preço proposto</td></tr>
+          <tr><td><code>aplicacao</code></td><td>Aplicação da peça</td><td>Quando necessária para identificação</td></tr>
+          <tr><td><code>data_entrega</code></td><td>Data prevista para entrega</td><td>Quando aplicável</td></tr>
+          <tr><td><code>aprovado</code></td><td>Indica aprovação do item</td><td>Deve representar a situação do item</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="entity" id="pedido">
+      <h2>Pedido</h2>
+      <table>
+        <thead>
+          <tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Identificador do pedido</td><td>Deve ser único</td></tr>
+          <tr><td><code>cliente_id</code></td><td>Cliente relacionado</td><td>Todo pedido deve estar associado a um cliente</td></tr>
+          <tr><td><code>veiculo_id</code></td><td>Veículo relacionado (FK → Veículo)</td><td>Quando a operação envolver um veículo (RN02)</td></tr>
+          <tr><td><code>cotacao_id</code></td><td>Cotação de origem</td><td>Quando o pedido for originado de uma cotação</td></tr>
+          <tr><td><code>responsavel_id</code></td><td>Usuário responsável (FK → Usuário)</td><td>Deve identificar o responsável</td></tr>
+          <tr><td><code>data_autorizacao</code></td><td>Data de autorização</td><td>Registra a autorização do pedido</td></tr>
+          <tr><td><code>status</code></td><td>Situação do pedido</td><td>Deve permitir acompanhar sua etapa</td></tr>
+          <tr><td><code>status_expedicao</code></td><td>Situação da expedição</td><td>Deve indicar o andamento da preparação</td></tr>
+          <tr><td><code>valor_frete</code></td><td>Valor do frete</td><td>Quando aplicável</td></tr>
+          <tr><td><code>observacao</code></td><td>Informações adicionais</td><td>Usada para observações da operação</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="entity" id="item-do-pedido">
+      <h2>Item do Pedido</h2>
+      <table>
+        <thead>
+          <tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Identificador do item</td><td>Deve ser único</td></tr>
+          <tr><td><code>pedido_id</code></td><td>Pedido ao qual pertence</td><td>Todo item deve estar vinculado a um pedido</td></tr>
+          <tr><td><code>peca_id</code></td><td>Peça do pedido</td><td>Deve identificar a peça</td></tr>
+          <tr><td><code>quantidade</code></td><td>Quantidade solicitada</td><td>Deve ser maior que zero</td></tr>
+          <tr><td><code>valor_custo</code></td><td>Custo da peça</td><td>Usado para análise da operação</td></tr>
+          <tr><td><code>valor_venda</code></td><td>Valor de venda</td><td>Deve representar o valor comercializado</td></tr>
+          <tr><td><code>valor_extra</code></td><td>Valor adicional</td><td>Quando aplicável</td></tr>
+          <tr><td><code>status</code></td><td>Situação do item</td><td>Deve acompanhar o andamento do item</td></tr>
+          <tr><td><code>fornecedor_id</code></td><td>Fornecedor relacionado</td><td>Quando a operação exigir</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="entity" id="ordem-de-compra">
+      <h2>Ordem de Compra</h2>
+      <table>
+        <thead>
+          <tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Identificador da Ordem de Compra</td><td>Deve ser único</td></tr>
+          <tr><td><code>fornecedor_id</code></td><td>Fornecedor da compra</td><td>Deve identificar o fornecedor</td></tr>
+          <tr><td><code>pedido_id</code></td><td>Pedido relacionado</td><td>Quando a compra estiver vinculada a um pedido</td></tr>
+          <tr><td><code>responsavel_id</code></td><td>Usuário responsável (FK → Usuário)</td><td>Deve identificar o responsável</td></tr>
+          <tr><td><code>data_autorizacao</code></td><td>Data de autorização da compra</td><td>Registra a autorização</td></tr>
+          <tr><td><code>nota_fiscal</code></td><td>Nota Fiscal da compra</td><td>Quando disponível</td></tr>
+          <tr><td><code>status</code></td><td>Situação da Ordem de Compra</td><td>Deve permitir acompanhar o andamento</td></tr>
+          <tr><td><code>data_cadastro</code></td><td>Data de criação</td><td>Deve registrar o cadastro</td></tr>
+          <tr><td><code>data_alteracao</code></td><td>Data da última alteração</td><td>Deve registrar alterações</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="entity" id="movimento-de-estoque">
+      <h2>Movimento de Estoque</h2>
+      <table>
+        <thead>
+          <tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Identificador da movimentação</td><td>Deve ser único</td></tr>
+          <tr><td><code>peca_id</code></td><td>Peça movimentada</td><td>Deve identificar a peça</td></tr>
+          <tr><td><code>quantidade</code></td><td>Quantidade movimentada</td><td>Deve corresponder à movimentação registrada</td></tr>
+          <tr><td><code>tipo_movimentacao</code></td><td>Tipo da movimentação</td><td>Deve identificar entrada ou saída</td></tr>
+          <tr><td><code>motivo</code></td><td>Motivo da movimentação</td><td>Deve explicar a origem da movimentação</td></tr>
+          <tr><td><code>usuario_id</code></td><td>Usuário responsável (FK → Usuário)</td><td>Deve identificar quem realizou o registro</td></tr>
+          <tr><td><code>data_cadastro</code></td><td>Data da movimentação</td><td>Deve registrar quando ocorreu</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="entity" id="nota-fiscal">
+      <h2>Nota Fiscal</h2>
+      <table>
+        <thead>
+          <tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Identificador da Nota Fiscal</td><td>Deve ser único</td></tr>
+          <tr><td><code>pedido_id</code></td><td>Pedido faturado (FK → Pedido)</td><td>Toda nota deve estar relacionada à operação correspondente (RN14)</td></tr>
+          <tr><td><code>numero</code></td><td>Número da Nota Fiscal</td><td>Deve identificar o documento fiscal</td></tr>
+          <tr><td><code>serie</code></td><td>Série da Nota Fiscal</td><td>Deve identificar a série fiscal</td></tr>
+          <tr><td><code>data_emissao</code></td><td>Data de emissão</td><td>Deve registrar a emissão</td></tr>
+          <tr><td><code>data_operacao</code></td><td>Data da operação</td><td>Deve registrar a operação relacionada</td></tr>
+          <tr><td><code>valor_nota</code></td><td>Valor total da nota</td><td>Deve corresponder ao faturamento</td></tr>
+          <tr><td><code>valor_frete</code></td><td>Valor do frete</td><td>Quando aplicável</td></tr>
+          <tr><td><code>tipo</code></td><td>Tipo da Nota Fiscal</td><td>Deve indicar a finalidade do documento</td></tr>
+          <tr><td><code>situacao</code></td><td>Situação da Nota Fiscal</td><td>Deve indicar seu estado</td></tr>
+          <tr><td><code>chave_acesso</code></td><td>Chave de acesso</td><td>Quando aplicável</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="entity" id="frete">
+      <h2>Frete</h2>
+      <table>
+        <thead>
+          <tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Identificador do frete</td><td>Deve ser único</td></tr>
+          <tr><td><code>pedido_id</code></td><td>Pedido transportado (FK → Pedido)</td><td>Todo frete está relacionado a um pedido</td></tr>
+          <tr><td><code>placa</code></td><td>Placa do veículo usado no transporte</td><td>Quando aplicável</td></tr>
+          <tr><td><code>status</code></td><td>Situação do transporte</td><td>Deve permitir acompanhar a entrega</td></tr>
+          <tr><td><code>endereco_entrega</code></td><td>Local de destino</td><td>Deve identificar o endereço de entrega</td></tr>
+          <tr><td><code>prazo</code></td><td>Prazo previsto</td><td>Deve representar o prazo acordado</td></tr>
+          <tr><td><code>numero_nota</code></td><td>Nota Fiscal relacionada</td><td>Quando aplicável</td></tr>
+          <tr><td><code>data_entrega</code></td><td>Data da entrega</td><td>Registrada após a entrega</td></tr>
+          <tr><td><code>municipio_entrega</code></td><td>Município de destino</td><td>Deve identificar o local da entrega</td></tr>
+          <tr><td><code>contato_nome</code></td><td>Nome do responsável pelo recebimento</td><td>Quando informado</td></tr>
+          <tr><td><code>contato_telefone</code></td><td>Telefone do responsável</td><td>Quando informado</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="entity" id="devolucao-garantia">
+      <h2>Devolução/Garantia</h2>
+      <table>
+        <thead>
+          <tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Identificador da ocorrência</td><td>Deve ser único</td></tr>
+          <tr><td><code>ordem_compra_id</code></td><td>Operação de origem</td><td>Deve identificar a operação relacionada</td></tr>
+          <tr><td><code>tipo</code></td><td>Tipo da ocorrência</td><td>Deve diferenciar devolução e garantia</td></tr>
+          <tr><td><code>status</code></td><td>Situação da ocorrência</td><td>Deve permitir acompanhar o processo</td></tr>
+          <tr><td><code>cliente</code></td><td>Cliente relacionado</td><td>Quando aplicável</td></tr>
+          <tr><td><code>placa</code></td><td>Veículo relacionado</td><td>Quando aplicável</td></tr>
+          <tr><td><code>nota_fiscal</code></td><td>Nota Fiscal relacionada</td><td>Quando aplicável</td></tr>
+          <tr><td><code>motivo</code></td><td>Motivo da ocorrência</td><td>Deve registrar a causa</td></tr>
+          <tr><td><code>descricao</code></td><td>Descrição do problema</td><td>Deve detalhar a ocorrência</td></tr>
+          <tr><td><code>observacoes</code></td><td>Informações adicionais</td><td>Complementa o registro</td></tr>
+          <tr><td><code>responsavel_id</code></td><td>Responsável pelo processo (FK → Usuário)</td><td>Deve identificar o usuário responsável</td></tr>
+          <tr><td><code>data</code></td><td>Data da ocorrência</td><td>Deve registrar o momento do registro</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="entity" id="titulo-financeiro">
+      <h2>Título Financeiro</h2>
+      <table>
+        <thead>
+          <tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Identificador do título</td><td>Deve ser único</td></tr>
+          <tr><td><code>tipo</code></td><td>Tipo do título financeiro</td><td>Deve identificar sua natureza</td></tr>
+          <tr><td><code>status</code></td><td>Situação do título</td><td>Deve indicar a situação financeira</td></tr>
+          <tr><td><code>origem</code></td><td>Operação que originou o título</td><td>Deve permitir rastrear sua origem</td></tr>
+          <tr><td><code>valor_total</code></td><td>Valor total</td><td>Deve representar o valor financeiro da operação</td></tr>
+          <tr><td><code>descricao</code></td><td>Descrição do lançamento</td><td>Deve identificar o título</td></tr>
+          <tr><td><code>referencia_externa</code></td><td>Referência relacionada</td><td>Quando aplicável</td></tr>
+          <tr><td><code>data_cadastro</code></td><td>Data de criação</td><td>Deve registrar o cadastro</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="entity" id="parcela-financeira">
+      <h2>Parcela Financeira</h2>
+      <table>
+        <thead>
+          <tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Identificador da parcela</td><td>Deve ser único</td></tr>
+          <tr><td><code>titulo_financeiro_id</code></td><td>Título ao qual pertence</td><td>Toda parcela deve estar vinculada a um título</td></tr>
+          <tr><td><code>numero</code></td><td>Número da parcela</td><td>Deve identificar sua posição</td></tr>
+          <tr><td><code>total_parcelas</code></td><td>Quantidade total de parcelas</td><td>Deve representar o parcelamento</td></tr>
+          <tr><td><code>vencimento</code></td><td>Data de vencimento</td><td>Deve indicar quando o pagamento é devido</td></tr>
+          <tr><td><code>valor</code></td><td>Valor da parcela</td><td>Deve corresponder ao valor devido</td></tr>
+          <tr><td><code>status</code></td><td>Situação da parcela</td><td>Deve indicar se está pendente, paga etc.</td></tr>
+          <tr><td><code>pago_em</code></td><td>Data do pagamento</td><td>Deve ser registrada quando houver pagamento</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="entity" id="usuario">
+      <h2>Usuário</h2>
+      <table>
+        <thead>
+          <tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Identificador único do usuário</td><td>Deve ser único</td></tr>
+        </tbody>
+      </table>
+        <p class="note">Os demais atributos da entidade (nome, setor, perfil de acesso) ainda não foram levantados junto à empresa — ver seção 8.5.</p>
+    </section>
+
+    <section class="entity" id="item-da-ordem-de-compra">
+      <h2>Item da Ordem de Compra</h2>
+      <table>
+        <thead>
+          <tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Identificador do item</td><td>Deve ser único</td></tr>
+          <tr><td><code>ordem_compra_id</code></td><td>Ordem de Compra à qual pertence</td><td>Todo item deve estar vinculado a uma Ordem de Compra</td></tr>
+          <tr><td><code>peca_id</code></td><td>Peça adquirida</td><td>Deve identificar a peça</td></tr>
+          <tr><td><code>quantidade</code></td><td>Quantidade adquirida</td><td>Deve ser maior que zero</td></tr>
+          <tr><td><code>valor</code></td><td>Valor da peça na compra</td><td>Deve representar o valor negociado com o fornecedor</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+  <footer>
+    Dicionário de Dados Conceitual — CK Autoshop · Modelagem de Banco de Dados · Entrega 1.
+    Voltar ao <a href="README.md">README</a>.
+  </footer>
+
+</div>
+<a class="back-top" href="#indice">↑ Índice</a>
+</body>
+</html>
